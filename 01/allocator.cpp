@@ -3,7 +3,9 @@
 void
 Allocator::makeAllocator(size_t maxSize)
 {
-    delete[] Allocator::memoryBlock;
+    // if ( Allocator::memoryBlock != nullptr ) 
+    //     delete[] Allocator::memoryBlock;
+    
     if ( maxSize  == 0 ) {
         Allocator::maxSize = 0;
         return;
@@ -21,13 +23,10 @@ Allocator::alloc(size_t size)
         || ( size == 0) )
         return nullptr;
 
-    // char* currentBlock = Allocator::memoryBlock + Allocator::offset;
-    // Allocator::offset += size;
-    
-    // return currentBlock;
-
+    char* currentBlock = Allocator::memoryBlock + Allocator::offset;
     Allocator::offset += size;
-    return Allocator::memoryBlock + Allocator::offset - size;
+    
+    return currentBlock;
 }
 
 void
@@ -38,5 +37,6 @@ Allocator::reset()
 
 Allocator::~Allocator() 
 {
-    delete[] Allocator::memoryBlock;
+//    if ( Allocator::memoryBlock != nullptr ) 
+        delete[] Allocator::memoryBlock;
 }

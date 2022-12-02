@@ -10,46 +10,46 @@ protected:
     void TearDown() {}
 };
 
-// TEST(TestAllocator, test_makeAllocator)
-// {
-//     Allocator testedAllocator;
-//     testedAllocator.makeAllocator( 10 );
-//     {
-//         char *res = testedAllocator.alloc( 10 );
-//         ASSERT_TRUE( res != nullptr );
-//     }
+TEST(TestAllocator, test_makeAllocator)
+{
+    Allocator testedAllocator;
+    testedAllocator.makeAllocator( 10 );
+    {
+        char *res = testedAllocator.alloc( 10 );
+        ASSERT_TRUE( res != nullptr );
+    }
 
-//     {
-//         char *res = testedAllocator.alloc( 1 );
-//         ASSERT_EQ( res, nullptr );
-//     }
+    {
+        char *res = testedAllocator.alloc( 1 );
+        ASSERT_EQ( res, nullptr );
+    }
 
-//     testedAllocator.makeAllocator( 0 );
-//     {
-//         char *res = testedAllocator.alloc( 1 );
-//         ASSERT_EQ( res, nullptr );
-//     }
-// }
+    testedAllocator.makeAllocator( 0 );
+    {
+        char *res = testedAllocator.alloc( 1 );
+        ASSERT_EQ( res, nullptr );
+    }
+}
 
-// TEST(TestAllocator, test_alloc)
-// {
-//     Allocator testedAllocator;
-//     testedAllocator.makeAllocator( 10 );
-//     {
-//         char *res = testedAllocator.alloc( 4 );
-//         ASSERT_TRUE( res != nullptr );
-//     }
+TEST(TestAllocator, test_alloc)
+{
+    Allocator testedAllocator;
+    testedAllocator.makeAllocator( 10 );
+    {
+        char *res = testedAllocator.alloc( 4 );
+        ASSERT_TRUE( res != nullptr );
+    }
 
-//     {
-//         char *res = testedAllocator.alloc( 6 );
-//         ASSERT_TRUE( res != nullptr );
-//     }
+    {
+        char *res = testedAllocator.alloc( 6 );
+        ASSERT_TRUE( res != nullptr );
+    }
 
-//     {
-//         char *res = testedAllocator.alloc( 10 );
-//         ASSERT_EQ( res, nullptr );
-//     }
-// }
+    {
+        char *res = testedAllocator.alloc( 10 );
+        ASSERT_EQ( res, nullptr );
+    }
+}
 
 TEST(TestAllocator, test_reset)
 {
