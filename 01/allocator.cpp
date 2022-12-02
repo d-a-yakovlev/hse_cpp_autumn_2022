@@ -3,9 +3,6 @@
 void
 Allocator::makeAllocator(size_t maxSize)
 {
-    // if ( Allocator::memoryBlock != nullptr ) 
-    //     delete[] Allocator::memoryBlock;
-    
     if ( maxSize  == 0 ) {
         Allocator::maxSize = 0;
         return;
@@ -36,7 +33,6 @@ Allocator::reset()
 }
 
 Allocator::~Allocator() 
-{
-//    if ( Allocator::memoryBlock != nullptr ) 
-        delete[] Allocator::memoryBlock;
+{ 
+    delete[] Allocator::memoryBlock;
 }
