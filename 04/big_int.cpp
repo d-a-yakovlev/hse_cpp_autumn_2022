@@ -141,7 +141,7 @@ BigInt& BigInt::operator = (BigInt&& moved)
 
 BigInt& BigInt::operator - ()
 {
-    this->negative = !this->negative;
+    this->negative = !(this->negative);
     return (*this);
 }
 
@@ -291,18 +291,17 @@ void resizePtrDelZeros(int32_t* ptr, size_t& size)
 BigInt BigInt::operator + (const BigInt& other) const
 {
     std::cout << "Before conditions" << std::endl;
+    std::cout << std::boolalpha << this->negative << " | " << other.negative << std::endl;
 
     if (this->negative && other.negative) {
-        return -((-(*this)) + (-other));
+        return -((-BigInt(*this)) + (-BigInt(other)));
     } else if (other.negative) {
-        return ((*this) - (-other));
+        return ((*this) - (-BigInt(other)));
     } else if (this->negative) {
-        return other - (-(*this));
+        return other - (-BigInt(*this));
     }
 
-    if ((*this) > other) {
-        return (*this) + other;
-    } else {
+    if ((*this) < other) {
         return other + (*this);
     }
 
@@ -315,19 +314,25 @@ BigInt BigInt::operator + (const BigInt& other) const
 
     int32_t carry = 0;
     for (size_t i=0; i<other.size_digits; ++i) {
-        std::cout << "Index + i: "+i << std::endl;
+        std::cout << "Index + i: " << i << std::endl;
         digits_new[i] = this->digits[i] + other.digits[i] + carry;
         carry = digits_new[i] / this->base;
         digits_new[i] = digits_new[i] % this->base;
     }
     std::cout<< "New cycle" << std::endl;
     for (size_t i=other.size_digits; i<size_new-1; ++i) {
-        std::cout << "Index + i: "+i << std::endl;
+        std::cout << "Index + i: " << i << std::endl;
         digits_new[i] += this->digits[i] + carry;
         carry = digits_new[i] / this->base;
         digits_new[i] = digits_new[i] % this->base;
     }
     digits_new[size_new-1] += carry;
+
+    // debug
+    for (size_t i=0; i<size_new; ++i) {
+        std::cout << digits_new[size_new-1-i]; 
+    }
+    std::cout << std::endl;
 
     resizePtrDelZeros(digits_new, size_new);
     return BigInt(digits_new, size_new);
@@ -342,19 +347,23 @@ BigInt BigInt::operator + (const int32_t& other) const
 
 BigInt BigInt::operator - (const BigInt& other) const
 {
+    std::cout << "Before conditions" << std::endl;
+    std::cout << std::boolalpha << this->negative << " | " << other.negative << std::endl;
+
+
     if (this->negative && other.negative) {
-        return -((-(*this)) - (-other));
+        return -((-BigInt(*this)) - (-BigInt(other)));
     } else if (other.negative) {
-        return (*this) + (-other);
+        return (*this) + (-BigInt(other));
     } else if (this->negative) {
-        return -((-(*this)) + other);
+        return -((-BigInt(*this)) + BigInt(other));
     }
 
-    if ((*this) > other) {
-        return (*this) - other;
-    } else {
-        return other - (*this);
+    if ((*this) < other) {
+        return -(other - (*this));
     }
+
+    std::cout << "After conditions" << std::endl;
 
     size_t size_new = std::max(this->size_digits, other.size_digits) + 1;
     int32_t* digits_new = new int32_t[size_new];
@@ -370,7 +379,7 @@ BigInt BigInt::operator - (const BigInt& other) const
         }
         digits_new[i] += cur_diff;
     }
-    for (size_t i=other.size_digits; i<size_new; ++i) {
+    for (size_t i=other.size_digits; i<size_new-1; ++i) {
         digits_new[i] += this->digits[i]; 
     }
 
@@ -385,6 +394,9 @@ std::string BigInt::to_string() const
     for (size_t i=0; i < this->size_digits; ++i) {
         result = std::to_string(this->digits[i]) + result;
     }
+    if (this->negative)
+        result = "-" + result;
+
     return result;
 }
 

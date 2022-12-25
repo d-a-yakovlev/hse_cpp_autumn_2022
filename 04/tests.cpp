@@ -67,6 +67,7 @@ TEST(TestBigInt, test_functionality_and_show)
     std::cout << "o2 - o1 = " << res2_1 << std::endl;
     std::cout << "o1 - o3 = " << res1_3 << std::endl;
     std::cout << "o3 - o2 = " << res3_2 << std::endl;
+    res3_2.show_debug();
     std::cout << "o2 - o3 = " << res2_3 << std::endl;
 
 
@@ -89,6 +90,10 @@ TEST(TestBigInt, test_functionality_and_show)
     e.show_debug();
     std::cout << "f :" << std::endl;
     f.show_debug();
+
+
+    std::cout << "9999999999-199999999 = " << (BigInt("9999999999") - BigInt("199999999")) << std::endl;
+    std::cout << "199999999-9999999999 = " << (BigInt("199999999")-BigInt("9999999999")) << std::endl;
 }
 
 
