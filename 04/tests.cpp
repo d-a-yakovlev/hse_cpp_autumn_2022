@@ -94,6 +94,78 @@ TEST(TestBigInt, test_functionality_and_show)
 
     std::cout << "9999999999-199999999 = " << (BigInt("9999999999") - BigInt("199999999")) << std::endl;
     std::cout << "199999999-9999999999 = " << (BigInt("199999999")-BigInt("9999999999")) << std::endl;
+
+    BigInt mult1 = BigInt("1111111111111111111111111111111111111111111");
+    BigInt mult2 = BigInt("1000000000000000000000000000000000000000000");
+
+    std::cout << "mult1 * mult2 = " << ((-mult1) * (-mult2)) << std::endl;
+    ASSERT_EQ(((-mult1) * (-mult2)).to_string(), "1111111111111111111111111111111111111111111000000000000000000000000000000000000000000");
+    mult1.show_debug();
+    mult2.show_debug();
+    std::cout << "mult1 * 7 = " << (mult1 * 7) << std::endl;
+    ASSERT_EQ((mult1 * 7).to_string(), "7777777777777777777777777777777777777777777");
+    std::cout << "mult2 * (-7) = " << (mult2 * (-7)) << std::endl;
+    ASSERT_EQ((mult2 * (-7)).to_string(), "-7000000000000000000000000000000000000000000");
+}
+
+
+TEST(TestBigInt, test_constructor)
+{
+    BigInt a = BigInt("12345");
+    BigInt b = BigInt();
+
+    ASSERT_EQ(a.to_string(), "12345");
+    ASSERT_EQ(b.to_string(), "0");
+
+    b = a;
+
+    ASSERT_EQ(b.to_string(), a.to_string());
+
+    BigInt c = BigInt();
+    c = std::move(b);
+    ASSERT_EQ(c.to_string(), a.to_string());
+    ASSERT_EQ(b.to_string(), "");
+}
+
+
+TEST(TestBigInt, test_inequations_negatives)
+{
+    BigInt a = BigInt("1000000");
+    BigInt aCopy = a;
+
+    ASSERT_EQ(a==aCopy, 1);
+
+    BigInt aGt = BigInt("1000001");
+
+    ASSERT_EQ(a < aGt, 1);
+    ASSERT_EQ(a <= aGt, 1);
+    ASSERT_EQ(a <= a, 1);
+    ASSERT_EQ(a > aGt, 0);
+    ASSERT_EQ(a >= aGt, 0);
+    ASSERT_EQ(a >= a, 1);
+    ASSERT_EQ(aGt > a, 1);
+    ASSERT_EQ(aGt < a, 0);
+
+    ASSERT_EQ(-a < a, 1);
+    ASSERT_EQ(-a < -(-a), 1);
+}
+
+
+TEST(TestBigInt, test_operations)
+{
+    BigInt a = BigInt("1000000");
+    BigInt aGt1 = a + 1;
+    BigInt _a1 = a - aGt1;
+
+    BigInt ama = a * a;
+    BigInt amaGt1 = a * aGt1;
+    BigInt _a1ma = _a1 * a;
+
+    ASSERT_EQ(aGt1.to_string(), "1000001");
+    ASSERT_EQ(_a1.to_string(), "-1");
+    ASSERT_EQ(ama.to_string(), "1000000000000");
+    ASSERT_EQ(amaGt1.to_string(), "1000001000000");
+    ASSERT_EQ(_a1ma.to_string(), "-1000000");
 }
 
 

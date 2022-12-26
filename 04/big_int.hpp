@@ -19,7 +19,7 @@ public:
     BigInt& operator = (BigInt&& moved);
     
 
-    BigInt& operator - ();
+    BigInt operator - ();
 
     bool operator < (const BigInt& rhs) const;
     bool operator == (const BigInt& rhs) const;

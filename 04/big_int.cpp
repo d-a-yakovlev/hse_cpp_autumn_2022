@@ -139,10 +139,11 @@ BigInt& BigInt::operator = (BigInt&& moved)
 }
 
 
-BigInt& BigInt::operator - ()
+BigInt BigInt::operator - ()
 {
-    this->negative = !(this->negative);
-    return (*this);
+    BigInt result = BigInt(*this);
+    result.negative = !(result.negative);
+    return result;
 }
 
 
@@ -385,6 +386,51 @@ BigInt BigInt::operator - (const BigInt& other) const
 
     resizePtrDelZeros(digits_new, size_new);
     return BigInt(digits_new, size_new);
+}
+
+
+BigInt BigInt::operator - (const int32_t& other) const
+{
+    return (*this) - BigInt(other);
+}
+
+
+BigInt BigInt::operator * (const BigInt& other) const
+{
+    bool negative_new = false;
+    if (this->negative != other.negative)
+        negative_new = true;
+    
+    size_t size_new = this->size_digits + other.size_digits;
+    int32_t* digits_new = new int32_t[size_new];
+    for (size_t i=0; i<size_new; ++i)
+        digits_new[i] = 0;
+
+    for (size_t i=0; i<this->size_digits; ++i) {
+        for (size_t j=0; j<other.size_digits; ++j) {
+            digits_new[i+j] += this->digits[i] * other.digits[j];
+        }
+    }
+
+    int32_t carry = 0;
+    for (size_t i=0; i<size_new-1; ++i) {
+        carry = digits_new[i] / this->base;
+        digits_new[i+1] += carry;
+        digits_new[i] %= this->base;
+    }
+
+    resizePtrDelZeros(digits_new, size_new);
+
+    BigInt result = BigInt(digits_new, size_new);
+    result.negative = negative_new;
+
+    return result;
+}
+
+
+BigInt BigInt::operator * (const int32_t& other) const
+{
+    return (*this) * BigInt(other);
 }
 
 
