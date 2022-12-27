@@ -3,10 +3,9 @@
 
 BigInt::BigInt()
 {
-    digits = new int32_t[1];
-    digits[0] = 0;
-    size_digits = 1;
-    negative = false;
+    this->size_digits = 0;
+    this->digits = nullptr;
+    this->negative = false;
 }
 
 
@@ -55,8 +54,8 @@ BigInt::BigInt(int32_t* ptr, size_t size)
 
 BigInt::~BigInt()
 {
-    if (digits != nullptr)
-        delete[] digits;
+    //if (digits != nullptr)
+    delete[] digits;
 }
 
 
@@ -143,7 +142,7 @@ BigInt BigInt::operator - ()
 {
     BigInt result = BigInt(*this);
     result.negative = !(result.negative);
-    return result;
+    return BigInt(result);
 }
 
 
@@ -270,7 +269,7 @@ bool BigInt::operator != (const BigInt& rhs) const
 }
 
 
-void resizePtrDelZeros(int32_t* ptr, size_t& size)
+void resizePtrDelZeros(int32_t*& ptr, size_t& size)
 {
     size_t cntZeros = 0;
     for (size_t i=0; i<size; ++i) { 
@@ -285,6 +284,8 @@ void resizePtrDelZeros(int32_t* ptr, size_t& size)
     for (size_t i=0; i<size; ++i) {
         ptr_new[i] = ptr[i];
     }
+
+    delete[] ptr;
     ptr = ptr_new;
 }
 

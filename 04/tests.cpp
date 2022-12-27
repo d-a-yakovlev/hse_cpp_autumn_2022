@@ -115,7 +115,7 @@ TEST(TestBigInt, test_constructor)
     BigInt b = BigInt();
 
     ASSERT_EQ(a.to_string(), "12345");
-    ASSERT_EQ(b.to_string(), "0");
+    ASSERT_EQ(b.to_string(), "");
 
     b = a;
 
