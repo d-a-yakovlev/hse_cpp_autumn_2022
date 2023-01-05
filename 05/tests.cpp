@@ -13,7 +13,7 @@ protected:
 
 TEST(TestSerializer, test_debug_what_stream_contain)
 {
-    Data x { 33, false, 400 };
+    DataA x { 33, false, 400 };
 
     std::stringstream stream;
 
@@ -28,16 +28,16 @@ TEST(TestSerializer, test_debug_what_stream_contain)
 }
 
 
-TEST(TestSerializer, test_serializer_Data_1)
+TEST(TestSerializer, test_serializer_DataA)
 {
-    Data x { 33, false, 400 };
+    DataA x { 33, false, 400 };
 
     std::stringstream stream;
 
     Serializer serializer(stream);
     serializer.save(x);
 
-    Data y { 0, true, 0 };
+    DataA y { 0, true, 0 };
 
     Deserializer deserializer(stream);
     const Error err = deserializer.load(y);
@@ -50,16 +50,16 @@ TEST(TestSerializer, test_serializer_Data_1)
 }
 
 
-TEST(TestSerializer, test_serializer_Data_2)
+TEST(TestSerializer, test_serializer_DataB)
 {
-    Data x {  42, true, 1337 };
+    DataB x {  true, true, 1337 };
 
     std::stringstream stream;
 
     Serializer serializer(stream);
     serializer.save(x);
 
-    Data y { 0, false, 0 };
+    DataB y { false, false, 0 };
 
     Deserializer deserializer(stream);
     const Error err = deserializer.load(y);
@@ -72,72 +72,22 @@ TEST(TestSerializer, test_serializer_Data_2)
 }
 
 
-TEST(TestSerializer, test_serializer_bad_data_1)
+TEST(TestSerializer, test_serializer_bad_data)
 {
-    Data x {  322, true, 777 };
+    DataA x {  0, true, 1917 };
 
     std::stringstream stream;
 
     Serializer serializer(stream);
     serializer.save(x);
 
-    Data y { true, false, true };
+    DataB y { false, 0, 1 };
 
     Deserializer deserializer(stream);
     
-    Error err;
-    try {
-        err = deserializer.load(y);
-    } catch (Error catched_err) {
-        ASSERT_EQ(err, Error::CorruptedArchive);
-        ASSERT_EQ(catched_err, Error::CorruptedArchive);
+    Error err = deserializer.load(y);
 
-        std::cout << "in catch debug" << std::endl;
-        if (catched_err == Error::CorruptedArchive) {
-            std::cout << "Error::CorruptedArchive catched" << std::endl;
-        } else {
-            std::cout << "Some error catched" << std::endl;
-        }
-    }
-
-    ASSERT_EQ(err, Error::NoError);
-    if (err == Error::NoError) {
-        std::cout << "Error::NoError catched" << std::endl;
-    } else {
-        std::cout << "Some error catched" << std::endl;
-    }
-}
-
-
-TEST(TestSerializer, test_serializer_bad_data_2)
-{
-    Data x {  0, true, 1917 };
-
-    std::stringstream stream;
-
-    Serializer serializer(stream);
-    serializer.save(x);
-
-    Data y { false, 0, true };
-
-    Deserializer deserializer(stream);
-    
-    Error err;
-    try {
-        err = deserializer.load(y);
-    } catch (Error catched_err) {
-        ASSERT_EQ(err, Error::CorruptedArchive);
-        ASSERT_EQ(catched_err, Error::CorruptedArchive);
-
-        if (catched_err == Error::CorruptedArchive)
-            std::cout << "Error::CorruptedArchive catched" << std::endl;
-    }
-
-    if (err == Error::NoError) {
-        std::cout << "Error::NoError catched" << std::endl;
-    } else {
-        std::cout << "Some error catched" << std::endl;
-    }
+    ASSERT_EQ(err, Error::CorruptedArchive);
 }
 
 

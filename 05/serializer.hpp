@@ -11,7 +11,7 @@ enum class Error
 };
 
 
-struct Data
+struct DataA
 {
     template <class Serializer>
     Error serialize(Serializer& serializer)
@@ -26,6 +26,26 @@ struct Data
     }
 
     uint64_t a;
+    bool b;
+    uint64_t c;
+};
+
+
+struct DataB
+{
+    template <class Serializer>
+    Error serialize(Serializer& serializer)
+    {
+        return serializer(a, b, c);
+    }
+
+    template <class Deserializer>
+    Error deserialize(Deserializer& deserializer)
+    {
+        return deserializer(a, b, c);
+    }
+
+    bool a;
     bool b;
     uint64_t c;
 };
