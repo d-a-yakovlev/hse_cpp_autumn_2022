@@ -13,7 +13,7 @@ protected:
 
 TEST(TestFormat, test_basic)
 {
-
+    std::cout << "{1}+{1} = {0}" << std::endl;
     auto text = cute::format("{1}+{1} = {0}", 2, "one");
     ASSERT_EQ(text, "one+one = 2");
 }
