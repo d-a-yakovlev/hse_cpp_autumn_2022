@@ -13,4 +13,4 @@ test: main.py
 	python3 main.py
 
 clean:
-	rm build/ cjson.egg-info/ dist/
+	rm -rf build/ cjson.egg-info/ dist/ cjson
