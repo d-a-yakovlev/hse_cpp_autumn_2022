@@ -67,6 +67,18 @@ TEST(TestAllocator, test_reset)
     }
 }
 
+TEST(TestAllocator, test_seq_call_makeAllocator)
+{
+    Allocator testedAllocator;
+    testedAllocator.makeAllocator( 1 );
+
+    char* chp = testedAllocator.alloc(1);
+    *chp = 'A';
+    testedAllocator.makeAllocator( 1 );
+
+    ASSERT_TRUE(*chp != 'A');
+}
+
 int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);

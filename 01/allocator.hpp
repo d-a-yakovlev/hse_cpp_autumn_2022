@@ -10,6 +10,6 @@ public:
     void reset();
     ~Allocator();
 private:
-    char* memoryBlock;
+    char* memoryBlock = nullptr;
     size_t maxSize, offset;
 };

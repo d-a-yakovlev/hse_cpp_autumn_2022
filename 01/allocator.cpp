@@ -3,25 +3,30 @@
 void
 Allocator::makeAllocator(size_t maxSize)
 {
+    if ( this->memoryBlock != nullptr ) {
+        delete[] this->memoryBlock;
+        this->memoryBlock = nullptr;
+    }
+    
     if ( maxSize  == 0 ) {
-        Allocator::maxSize = 0;
+        this->maxSize = 0;
         return;
     }
     
-    Allocator::offset = 0;
-    Allocator::maxSize = maxSize;
-    Allocator::memoryBlock = new char[maxSize];
+    this->offset = 0;
+    this->maxSize = maxSize;
+    this->memoryBlock = new char[maxSize];
 }
 
 char*
 Allocator::alloc(size_t size)
 {
-    if ( ( Allocator::offset + size > Allocator::maxSize )
+    if ( ( this->offset + size > this->maxSize )
         || ( size == 0) )
         return nullptr;
 
-    char* currentBlock = Allocator::memoryBlock + Allocator::offset;
-    Allocator::offset += size;
+    char* currentBlock = this->memoryBlock + this->offset;
+    this->offset += size;
     
     return currentBlock;
 }
@@ -29,10 +34,10 @@ Allocator::alloc(size_t size)
 void
 Allocator::reset()
 {
-    Allocator::offset = 0;
+    this->offset = 0;
 }
 
 Allocator::~Allocator() 
 { 
-    delete[] Allocator::memoryBlock;
+    delete[] this->memoryBlock;
 }
