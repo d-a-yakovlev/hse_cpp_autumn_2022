@@ -74,9 +74,20 @@ TEST(TestAllocator, test_seq_call_makeAllocator)
 
     char* chp = testedAllocator.alloc(1);
     *chp = 'A';
+
     testedAllocator.makeAllocator( 1 );
 
-    ASSERT_TRUE(*chp != 'A');
+    char* chpNew = testedAllocator.alloc(1);
+
+    if (chp == chpNew)
+    { 
+        ASSERT_TRUE(*chp != 'A');
+        ASSERT_TRUE(*chpNew == 0);
+    }
+    else
+    { 
+        ASSERT_TRUE(*chpNew == 0);
+    }
 }
 
 int main(int argc, char** argv)
