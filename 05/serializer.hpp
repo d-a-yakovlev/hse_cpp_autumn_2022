@@ -3,52 +3,7 @@
 #include <string>
 #include <cstring>
 
-
-enum class Error
-{
-    NoError,
-    CorruptedArchive
-};
-
-
-struct DataA
-{
-    template <class Serializer>
-    Error serialize(Serializer& serializer)
-    {
-        return serializer(a, b, c);
-    }
-
-    template <class Deserializer>
-    Error deserialize(Deserializer& deserializer)
-    {
-        return deserializer(a, b, c);
-    }
-
-    uint64_t a;
-    bool b;
-    uint64_t c;
-};
-
-
-struct DataB
-{
-    template <class Serializer>
-    Error serialize(Serializer& serializer)
-    {
-        return serializer(a, b, c);
-    }
-
-    template <class Deserializer>
-    Error deserialize(Deserializer& deserializer)
-    {
-        return deserializer(a, b, c);
-    }
-
-    bool a;
-    bool b;
-    uint64_t c;
-};
+#include "error.hpp"
 
 
 class Serializer
@@ -69,6 +24,9 @@ public:
         return process(std::forward<ArgsT>(args)...);
     }
     
+private:
+    std::ostream& out_;
+
     Error process(bool& arg);
     Error process(uint64_t& arg);
 
@@ -81,8 +39,6 @@ public:
 
         return process(std::forward<ArgsT>(argPack)...);
     }
-private:
-    std::ostream& out_;
 };
 
 
@@ -102,6 +58,9 @@ public:
         return process(std::forward<ArgsT>(args)...);
     }
 
+private:
+    std::istream& in_;
+
     Error process(bool& value);
     Error process(uint64_t& value);
 
@@ -114,6 +73,4 @@ public:
 
         return process(std::forward<ArgsT>(argPack)...);
     }
-private:
-    std::istream& in_;
 };
