@@ -1,15 +1,20 @@
 #include "matrix.hpp"
 
+#define RELEASE 1
 
 Matrix::ProxyRow::ProxyRow()
 {
+#ifndef RELEASE
     std::cout << "Matrix::ProxyRow::ProxyRow" << this << std::endl;
+#endif
 }
 
 
 Matrix::Matrix(size_t rows, size_t cols)
 {
+#ifndef RELEASE
     std::cout << "Matrix::Matrix" << this << std::endl;
+#endif
     this->cRows = rows;
     this->cCols = cols;
     
@@ -28,7 +33,9 @@ Matrix::Matrix(size_t rows, size_t cols)
 Matrix::ProxyRow::~ProxyRow()
 {
     if (this->data_ != nullptr) {
+#ifndef RELEASE
         std::cout << "Matrix::ProxyRow::~ProxyRow" << this << std::endl;
+#endif
         delete[] this->data_;
     }
 }
@@ -37,7 +44,9 @@ Matrix::~Matrix()
 {
 
     if (this->rows_ != nullptr) {
+#ifndef RELEASE
         std::cout << "Matrix::~Matrix" << this << std::endl;
+#endif
         delete[] this->rows_;
     }
 }
