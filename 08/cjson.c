@@ -92,16 +92,19 @@ char* rawConcat(const char* str1, const char* str2)
 const char* int2pchar(int num)
 {
 #ifndef RELEASE_DUMPS
-    printf("int2pchar : %d", num);
+    printf("int2pchar : %d\n", num);
 #endif
     int isNegative = 0;
     if ( num < 0 ) { isNegative = 1; num *= -1; }
     int numLen = ceil(log10(num));
-    if ( num % 10 == 0 ) numLen++;
-    char* pcharnum = (char*)malloc(sizeof(char)*(numLen + isNegative + 1));
+    if ( num % 10 == 0 || num ==1 ) numLen++;
+
+    int symCount = numLen + 1;
+    char* pcharnum = (char*)malloc(sizeof(char)*(symCount + isNegative));
     
     if ( isNegative ) { *pcharnum = '-'; pcharnum++; }
-    for (int i=numLen - 1; i>=0; i--)
+    
+    for (int i=symCount-2; i>-1; i--)
     {
 #ifndef RELEASE_DUMPS
         printf("digits in %d is %d\n", i, num % 10);
@@ -109,10 +112,11 @@ const char* int2pchar(int num)
         pcharnum[i] = num % 10 + '0';
         num /= 10;
     }
+    pcharnum[symCount-1] = '\0';
     if ( isNegative ) { pcharnum--; }
-    pcharnum[numLen + isNegative] = '\0';
+    
 #ifndef RELEASE_DUMPS
-    for (int i=0; i < numLen + isNegative + 1; ++i)
+    for (int i=0; i < symCount + isNegative; ++i)
     {
         printf("%d) %c\n", i, pcharnum[i]);
     }
