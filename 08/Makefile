@@ -10,7 +10,7 @@ setup: setup.py
 	sudo python3 setup.py install
 
 test: main.py
-	python3 main.py
+	./main.py
 
 clean:
 	rm -rf build/ cjson.egg-info/ dist/ cjson
