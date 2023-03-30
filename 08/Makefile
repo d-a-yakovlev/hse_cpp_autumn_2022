@@ -10,6 +10,7 @@ setup: setup.py
 	sudo python3 setup.py install
 
 test: main.py
+	sudo chmod 777 main.py
 	./main.py
 
 clean:

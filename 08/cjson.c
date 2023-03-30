@@ -70,7 +70,7 @@ int isNumeric(char* token)
     while (*token != '\0')
     {
         if ( !isdigit(*token)  ) return 0;
-        if ( firstNil && *token == '0' ) return 0;
+        if ( firstNil && *token == '0' && strlen(token) > 1 ) return 0;
         firstNil = 0;
 
         token++;
@@ -89,10 +89,13 @@ char* rawConcat(const char* str1, const char* str2)
 }
 
 
-char* int2pchar(int num)
+const char* int2pchar(int num)
 {
+#ifndef RELEASE_DUMPS
+    printf("int2pchar : %d", num);
+#endif
     int isNegative = 0;
-    if ( num < 0 ) isNegative = 1;
+    if ( num < 0 ) { isNegative = 1; num *= -1; }
     int numLen = ceil(log10(num));
     if ( num % 10 == 0 ) numLen++;
     char* pcharnum = (char*)malloc(sizeof(char)*(numLen + isNegative + 1));
@@ -204,7 +207,7 @@ PyObject* cjson_loads(PyObject* self, PyObject* args)
         }
         else 
         {
-            printf("ERROR: Failed non suported type in %ld kv pair\n", i - i % 2);
+            printf("ERROR: Failed non suported type in %ld kv pair\ntoken : %s\n", i - i % 2, tokens[i]);
             return NULL;
         }
 
@@ -240,7 +243,9 @@ PyObject* cjson_dumps(PyObject* self, PyObject* args)
         printf("ERROR: Failed to parse arguments of dictionary\n");
         return NULL;
     }
-
+#ifndef RELEASE_DUMPS
+    printf("First steps is passed\n");
+#endif
     char* accum = "{";
     int firstIter = 1;
     while (PyDict_Next(dict, &pos, &key, &value))
@@ -258,11 +263,27 @@ PyObject* cjson_dumps(PyObject* self, PyObject* args)
         
         innerStrKey = rawConcat(innerStrKey, "\": ");
         accum = rawConcat(accum, innerStrKey);
+#ifndef RELEASE_DUMPS
+        printf("Accum with key : %s\n", accum);
+#endif
 
         const char* innerStrValue = NULL;
+#ifndef RELEASE_DUMPS
+            printf("PyLong check await\n");
+#endif
         if (PyLong_Check(value))
         {
-            innerStrValue = int2pchar(PyLong_AsLong(value));
+#ifndef RELEASE_DUMPS
+            printf("PyLong check is passed\n");
+#endif
+            int temp_value = PyLong_AsLong(value);
+#ifndef RELEASE_DUMPS
+            printf("PyLong_AsLong passed %d\n", temp_value);
+#endif
+            innerStrValue = int2pchar(temp_value);
+#ifndef RELEASE_DUMPS
+            printf("PyLong_AsLong passed %s\n", innerStrValue);
+#endif
             accum = rawConcat(accum, innerStrValue);
         }
         else
