@@ -9,6 +9,7 @@
 #include <Python.h>
 
 #define RELEASE_LOADS
+#define RELEASE_DUMPS
 
 char* cleanRawJSONfromSpaces(char* rawJson, Py_ssize_t rawLen)
 {
@@ -79,10 +80,49 @@ int isNumeric(char* token)
 }
 
 
+char* rawConcat(const char* str1, const char* str2)
+{
+    char* dist = (char*)malloc(strlen(str1) + strlen(str2) + 1); 
+    strcpy(dist, str1);
+    strcat(dist, str2);
+    return dist;
+}
+
+
+char* int2pchar(int num)
+{
+    int isNegative = 0;
+    if ( num < 0 ) isNegative = 1;
+    int numLen = ceil(log10(num));
+    if ( num % 10 == 0 ) numLen++;
+    char* pcharnum = (char*)malloc(sizeof(char)*(numLen + isNegative + 1));
+    
+    if ( isNegative ) { *pcharnum = '-'; pcharnum++; }
+    for (int i=numLen - 1; i>=0; i--)
+    {
+#ifndef RELEASE_DUMPS
+        printf("digits in %d is %d\n", i, num % 10);
+#endif
+        pcharnum[i] = num % 10 + '0';
+        num /= 10;
+    }
+    if ( isNegative ) { pcharnum--; }
+    pcharnum[numLen + isNegative] = '\0';
+#ifndef RELEASE_DUMPS
+    for (int i=0; i < numLen + isNegative + 1; ++i)
+    {
+        printf("%d) %c\n", i, pcharnum[i]);
+    }
+#endif
+
+    return pcharnum;
+}
+
+
 PyObject* cjson_loads(PyObject* self, PyObject* args)
 {
     // parsing arguments from tuple (a1, a2, a3)
-    // our case is "{key1 : value1, key2 : value2} as e.g"
+    // our case is '{"key1" : value1, "key2" : value2}' as e.g
     char* argString;
     Py_ssize_t argStringLen = 0;
 
@@ -190,7 +230,52 @@ PyObject* cjson_loads(PyObject* self, PyObject* args)
 
 PyObject* cjson_dumps(PyObject* self, PyObject* args)
 {
-    return Py_BuildValue("s", "plugplug");
+    PyObject* dict = NULL;
+    PyObject* key = NULL;
+    PyObject* value = NULL;
+    Py_ssize_t pos = 0;
+
+    if (!PyArg_ParseTuple(args, "O", &dict))
+    {
+        printf("ERROR: Failed to parse arguments of dictionary\n");
+        return NULL;
+    }
+
+    char* accum = "{";
+    int firstIter = 1;
+    while (PyDict_Next(dict, &pos, &key, &value))
+    {
+        const char* innerStrKey = PyUnicode_AsUTF8(key);
+        if (firstIter)
+        {
+            innerStrKey = rawConcat("\"", innerStrKey);
+            firstIter = 0;
+        }
+        else
+        {
+            innerStrKey = rawConcat(", \"", innerStrKey);
+        }
+        
+        innerStrKey = rawConcat(innerStrKey, "\": ");
+        accum = rawConcat(accum, innerStrKey);
+
+        const char* innerStrValue = NULL;
+        if (PyLong_Check(value))
+        {
+            innerStrValue = int2pchar(PyLong_AsLong(value));
+            accum = rawConcat(accum, innerStrValue);
+        }
+        else
+        {
+            innerStrValue = PyUnicode_AsUTF8(value);
+            innerStrValue = rawConcat("\"", innerStrValue);
+            innerStrValue = rawConcat(innerStrValue, "\"");
+            accum = rawConcat(accum, innerStrValue);
+        }
+    }
+    accum = rawConcat(accum, "}");
+
+    return Py_BuildValue("s", accum);
 }
 
 
