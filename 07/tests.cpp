@@ -13,7 +13,13 @@ protected:
 
 TEST(TestTree, test_basic)
 {
-    TreeAVL tree;
+    TreeAVL<int, int> tree;
+    tree.insert(std::make_pair<int,int>(2, 2));
+    tree.insert(std::make_pair<int,int>(1, 1));
+    tree.insert(std::make_pair<int,int>(3, 3));
+    tree.insert(std::make_pair<int,int>(4, 4));
+
+    tree.print();
 }
 
 
